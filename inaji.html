@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>特急伊那路 ガイド</title>
+<style>
+  :root{
+    --bg:#f7f3ec; --surface:#fffdf8; --surface2:#efe7d8; --ink:#23201b; --muted:#6b6257;
+    --line:#ddd2bf; --accent:#c2400c; --accent-ink:#ffffff; --accent-soft:#fbe9dd;
+    --key:#7a4a12; --key-bg:#f7e8c8; --ok:#1d6b4f; --warn:#8a5a00;
+    --radius:14px; --shadow:0 2px 10px rgba(60,40,10,.08);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#171512; --surface:#221f1b; --surface2:#2c2823; --ink:#f0eadd; --muted:#b3a894;
+      --line:#453d31; --accent:#f0763a; --accent-ink:#1d1209; --accent-soft:#3d2417;
+      --key:#f2c979; --key-bg:#3d3016; --ok:#6fd3a7; --warn:#f2c979;
+      --shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,system-ui,sans-serif;
+    line-height:1.65;-webkit-text-size-adjust:100%}
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px 56px}
+  h1{font-size:1.85rem;line-height:1.25;margin:6px 0 4px;letter-spacing:.01em}
+  h1 .sub{display:block;font-size:.95rem;font-weight:600;color:var(--accent);margin-bottom:6px}
+  h2{font-size:1.25rem;margin:34px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+  h3{font-size:1.02rem;margin:18px 0 8px}
+  p{margin:8px 0}
+  .lead{color:var(--muted);font-size:.98rem}
+  .facts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+  .fact{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.85rem;font-weight:600}
+  .fact b{color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:14px 0}
+  /* direction toggle */
+  .seg{display:flex;background:var(--surface2);border-radius:10px;padding:4px;gap:4px}
+  .seg button{flex:1;border:0;background:transparent;color:var(--ink);font:inherit;font-weight:700;
+    padding:10px 6px;border-radius:8px;cursor:pointer;font-size:1rem}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+  .route{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end;margin-top:14px}
+  label.flabel{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+  select{width:100%;font:inherit;font-size:1rem;padding:11px 8px;border:1px solid var(--line);
+    border-radius:10px;background:var(--surface);color:var(--ink)}
+  .swap{border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:10px;
+    width:44px;height:44px;font-size:1.15rem;cursor:pointer;line-height:1}
+  .quick{margin-top:14px}
+  .quick .qtitle{font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:6px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--key);background:var(--key-bg);color:var(--ink);border-radius:999px;
+    padding:7px 14px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
+  .chip small{font-weight:500;color:var(--muted)}
+  .result{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px}
+  .next-big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .next-big .time{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums}
+  .next-big .train{background:var(--accent-soft);color:var(--accent);font-weight:800;border-radius:8px;padding:2px 10px}
+  .next-meta{color:var(--muted);font-size:.95rem}
+  .next-meta b{color:var(--ink)}
+  .badge-tmr{display:inline-block;background:var(--key-bg);color:var(--key);font-weight:700;border-radius:6px;padding:0 8px;font-size:.85rem}
+  .later{margin-top:10px;font-size:.95rem}
+  .later div{padding:6px 0;border-top:1px dotted var(--line)}
+  .err{color:var(--accent);font-weight:700}
+  /* timetable */
+  .tt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.tt{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+  table.tt th,table.tt td{border:1px solid var(--line);padding:7px 6px;text-align:center;font-size:.93rem}
+  table.tt thead th{background:var(--surface2)}
+  table.tt tbody th{text-align:left;background:var(--surface);font-weight:700;white-space:nowrap}
+  table.tt tr.keyrow th,table.tt tr.keyrow td{background:var(--key-bg)}
+  .keymark{color:var(--key);font-size:.72rem;font-weight:800;display:block}
+  .note{font-size:.88rem;color:var(--muted)}
+  ul.notes{margin:8px 0;padding-left:1.3em}
+  ul.notes li{margin:5px 0}
+  .links{display:grid;gap:10px}
+  a.btnlink{display:block;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:13px 16px;color:var(--ink);text-decoration:none;font-weight:700;box-shadow:var(--shadow)}
+  a.btnlink span{display:block;font-weight:400;font-size:.85rem;color:var(--muted)}
+  a.btnlink:active{border-color:var(--accent)}
+  .farebox{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px;margin:14px 0}
+  .farebox b{color:var(--accent)}
+  footer{margin-top:36px;font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+  @media (max-width:520px){
+    h1{font-size:1.55rem}
+    .next-big .time{font-size:1.7rem}
+    .route{grid-template-columns:1fr auto 1fr;gap:6px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1><span class="sub">JR東海・飯田線</span>特急伊那路 ガイド</h1>
+  <p class="lead">特急「伊那路」は、豊橋〜飯田を結ぶ飯田線の特急列車です。よく使う4駅（豊橋・新城・平岡・飯田）を中心に、次の列車の発車時刻と全停車駅の時刻表をまとめました。無料で使えます。</p>
+  <div class="facts">
+    <span class="fact">毎日運転</span>
+    <span class="fact">1日 <b>2往復</b></span>
+    <span class="fact">373系・普通車</span>
+    <span class="fact">一部指定席（自由席車あり）</span>
+    <span class="fact">豊橋〜飯田 約<b>2時間33分〜</b></span>
+  </div>
+
+  <h2>次の列車</h2>
+  <div class="card">
+    <div class="seg" role="group" aria-label="方向">
+      <button type="button" id="dirDown" aria-pressed="true">飯田方面</button>
+      <button type="button" id="dirUp" aria-pressed="false">豊橋方面</button>
+    </div>
+    <div class="route">
+      <div>
+        <label class="flabel" for="fromSel">乗る駅</label>
+        <select id="fromSel"></select>
+      </div>
+      <button type="button" class="swap" id="swapBtn" aria-label="乗る駅と降りる駅を入れ替え">⇄</button>
+      <div>
+        <label class="flabel" for="toSel">降りる駅</label>
+        <select id="toSel"></select>
+      </div>
+    </div>
+    <div class="quick">
+      <div class="qtitle">よく使う駅（タップで乗る駅にセット）</div>
+      <div class="chips" id="quickChips"></div>
+    </div>
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+  <p class="note">※ 特急「伊那路」は毎日運転・1日2往復のみです。本日の列車が終了している場合は、翌日の最初の列車を案内します。臨時列車・臨時停車は掲載していません。</p>
+
+  <h2>時刻表（全停車駅）</h2>
+  <h3>下り（豊橋 → 飯田）</h3>
+  <div class="tt-wrap"><table class="tt" id="ttDown"></table></div>
+  <h3>上り（飯田 → 豊橋）</h3>
+  <div class="tt-wrap"><table class="tt" id="ttUp"></table></div>
+  <p class="note">※ 途中駅は発時刻、終着駅は着時刻です。<span class="keymark">よく使う駅</span> の行は色付きで表示しています。出典：JR東海公式「飯田線時刻表」PDF（2026年3月改正）およびJRグループ公式ポータルの特急「伊那路」時刻表で照合。</p>
+
+  <h2>運賃・特急料金について</h2>
+  <div class="farebox">
+    <p style="margin-top:0">特急「伊那路」に乗るには、<b>乗車券＋特急券（特急料金）</b> が必要です。指定席は一部の車両のみで、自由席車もあります（指定席特急料金は時期により変わります）。</p>
+    <p style="margin-bottom:0">運賃・特急料金の金額は、区間・日付によって確認が必要です。下のJR東海公式「時刻表・運賃検索」で、乗車日と区間を指定してご確認ください。</p>
+  </div>
+  <h3>お得なきっぷ</h3>
+  <ul class="notes">
+    <li><strong>伊那路特急回数券</strong>：豊橋〜飯田の設定があり、4枚つづり12,600円（JR東海公式）。指定席も利用できます。発売・利用条件は公式ページでご確認ください。</li>
+  </ul>
+
+  <h2>ご利用上の注意</h2>
+  <ul class="notes">
+    <li>毎日運転・1日2往復（下り1号・3号／上り2号・4号）です。本数が少ないため、乗り遅れにご注意ください。</li>
+    <li>乗車券のほかに特急券が必要です。指定席をご利用の場合は、乗車前に指定席特急券をお買い求めください。</li>
+    <li>このページに臨時列車・臨時停車は掲載していません。</li>
+    <li>ダイヤ改正や当日の運転状況（遅延・運休など）は、JR東海公式サイトでご確認ください。</li>
+  </ul>
+
+  <h2>公式情報・関連ページ</h2>
+  <div class="links">
+    <a class="btnlink" href="https://railway.jr-central.co.jp/timetable/nr_doc/search.html" target="_blank" rel="noopener">JR東海公式 時刻表・運賃検索<span>乗車日・区間を指定して運賃と特急料金を確認できます</span></a>
+    <a class="btnlink" href="https://jr-group.jp/inaji-timetable/" target="_blank" rel="noopener">JRグループ公式 特急「伊那路」時刻表<span>全駅・全列車の時刻表</span></a>
+    <a class="btnlink" href="https://railway.jr-central.co.jp/time-schedule/srch/_pdf/data/202603/iida_Iida_E_e_ud.pdf" target="_blank" rel="noopener">JR東海公式 飯田線時刻表PDF（飯田駅・2026年3月改正）<span>駅掲示時刻表のPDFです</span></a>
+    <a class="btnlink" href="https://railway.jr-central.co.jp/time-schedule/srch/_pdf/data/202603/iida_Hiraoka_E_e_ud.pdf" target="_blank" rel="noopener">JR東海公式 飯田線時刻表PDF（平岡駅・2026年3月改正）<span>駅掲示時刻表のPDFです</span></a>
+    <a class="btnlink" href="https://tada-saka.github.io/" target="_blank" rel="noopener">豊鉄バス 豊橋⇔新城 ガイド（姉妹ページ）<span>豊橋〜新城のバスの時刻表・次のバス検索</span></a>
+    <a class="btnlink" href="https://tada-saka.github.io/taguchi.html" target="_blank" rel="noopener">豊鉄バス 田口新城線 ガイド（姉妹ページ）<span>新城郵便局⇔こんたく長篠の時刻表・次のバス検索</span></a>
+  </div>
+
+  <footer>
+    <p>このページは個人利用のための非公式ガイドです。時刻はJR東海公式資料（2026年3月改正）に基づきます。正確な情報は公式サイトでご確認ください。</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var STATIONS = ["豊橋","豊川","新城","本長篠","湯谷温泉","中部天竜","水窪","平岡","温田","天竜峡","飯田"];
+  var KEY_STATIONS = ["豊橋","新城","平岡","飯田"];
+  var DOWN = {
+    "1号":{"豊橋":"10:08","豊川":"10:17","新城":"10:33","本長篠":"10:45","湯谷温泉":"10:53","中部天竜":"11:22","水窪":"11:35","平岡":"11:57","温田":"12:07","天竜峡":"12:25","飯田":"12:41"},
+    "3号":{"豊橋":"18:19","豊川":"18:27","新城":"18:47","本長篠":"18:59","湯谷温泉":"19:07","中部天竜":"19:35","水窪":"19:51","平岡":"20:15","温田":"20:26","天竜峡":"20:44","飯田":"21:01"}
+  };
+  var UP = {
+    "2号":{"飯田":"9:58","天竜峡":"10:14","温田":"10:31","平岡":"10:42","水窪":"11:05","中部天竜":"11:21","湯谷温泉":"11:49","本長篠":"11:57","新城":"12:08","豊川":"12:21","豊橋":"12:31"},
+    "4号":{"飯田":"15:55","天竜峡":"16:12","温田":"16:29","平岡":"16:42","水窪":"17:04","中部天竜":"17:18","湯谷温泉":"17:46","本長篠":"17:54","新城":"18:06","豊川":"18:20","豊橋":"18:31"}
+  };
+  function toMin(t){var p=t.split(":");return parseInt(p[0],10)*60+parseInt(p[1],10);}
+  function fmtDur(m){var h=Math.floor(m/60),r=m%60;return h>0?(h+"時間"+(r>0?r+"分":"")):(r+"分");}
+  function pad(n){return (n<10?"0":"")+n;}
+  function fmtTime(t){var p=t.split(":");return pad(parseInt(p[0],10))+":"+pad(parseInt(p[1],10));}
+
+  var dir = "down";
+  var fromSel = document.getElementById("fromSel");
+  var toSel = document.getElementById("toSel");
+  var result = document.getElementById("result");
+  var btnDown = document.getElementById("dirDown");
+  var btnUp = document.getElementById("dirUp");
+
+  function stationOrder(){
+    return dir==="down" ? STATIONS : STATIONS.slice().reverse();
+  }
+  function fillSelects(keepFrom, keepTo){
+    var order = stationOrder();
+    function fill(sel, val){
+      sel.innerHTML="";
+      order.forEach(function(s){
+        var o=document.createElement("option");o.value=s;o.textContent=s;sel.appendChild(o);
+      });
+      sel.value = (val && order.indexOf(val)>=0) ? val : order[0];
+    }
+    fill(fromSel, keepFrom);
+    fill(toSel, keepTo);
+    if(fromSel.value===toSel.value){
+      var idx=order.indexOf(fromSel.value);
+      toSel.value = order[idx < order.length-1 ? order.length-1 : 0];
+      if(fromSel.value===toSel.value){ toSel.value = order[order.length-1]; }
+    }
+  }
+  function trainsForDir(){
+    return dir==="down" ? [["1号",DOWN["1号"]],["3号",DOWN["3号"]]]
+                        : [["2号",UP["2号"]],["4号",UP["4号"]]];
+  }
+  function render(){
+    var from=fromSel.value, to=toSel.value;
+    var order=stationOrder();
+    if(order.indexOf(from) >= order.indexOf(to)){
+      result.innerHTML = '<p class="err">その方向では「'+from+'」から「'+to+'」へは行けません。乗る駅・降りる駅を見直すか、方向を切り替えてください。</p>';
+      return;
+    }
+    var now=new Date();
+    var nowMin=now.getHours()*60+now.getMinutes();
+    var list=trainsForDir().map(function(pair){
+      return {name:pair[0], dep:pair[1][from], arr:pair[1][to], depMin:toMin(pair[1][from]), arrMin:toMin(pair[1][to])};
+    });
+    var upcoming=list.filter(function(t){return t.depMin>nowMin;});
+    var html="";
+    var first, tomorrow=false;
+    if(upcoming.length){ first=upcoming[0]; }
+    else { first=list[0]; tomorrow=true; }
+    var waitMin = tomorrow ? (1440-nowMin)+first.depMin : first.depMin-nowMin;
+    html += '<div class="next-big"><span class="time">'+fmtTime(first.dep)+' 発</span>'
+          + '<span class="train">伊那路'+first.name+'</span>'
+          + (tomorrow ? '<span class="badge-tmr">明日</span>' : '')
+          + '</div>';
+    html += '<p class="next-meta">'+from+' → '+to+' ／ '+fmtTime(first.arr)+' 着 ／ 所要時間 <b>'+fmtDur(first.arrMin-first.depMin)+'</b>'
+          + (tomorrow ? '（本日の列車は終了しました。明日の最初の列車です）'
+                      : '（発車まであと約 '+fmtDur(waitMin)+'）')
+          + '</p>';
+    var rest = tomorrow ? list.slice(1) : upcoming.slice(1);
+    if(rest.length){
+      html += '<div class="later"><div><b>その後の列車</b></div>';
+      rest.forEach(function(t){
+        html += '<div>伊那路'+t.name+'　'+fmtTime(t.dep)+' 発 → '+fmtTime(t.arr)+' 着（'+fmtDur(t.arrMin-t.depMin)+'）'+(tomorrow?'・明日':'')+'</div>';
+      });
+      html += '</div>';
+    }
+    result.innerHTML = html;
+  }
+  function setDir(d){
+    dir=d;
+    btnDown.setAttribute("aria-pressed", d==="down"?"true":"false");
+    btnUp.setAttribute("aria-pressed", d==="up"?"true":"false");
+    fillSelects(d==="down"?"豊橋":"飯田", d==="down"?"飯田":"豊橋");
+    render();
+  }
+  btnDown.addEventListener("click",function(){setDir("down");});
+  btnUp.addEventListener("click",function(){setDir("up");});
+  fromSel.addEventListener("change",render);
+  toSel.addEventListener("change",render);
+  document.getElementById("swapBtn").addEventListener("click",function(){
+    var oldFrom=fromSel.value, oldTo=toSel.value;
+    setDir(dir==="down"?"up":"down");
+    fillSelects(oldTo, oldFrom);
+    render();
+  });
+
+  // quick chips for key stations
+  var chips=document.getElementById("quickChips");
+  KEY_STATIONS.forEach(function(s){
+    var b=document.createElement("button");
+    b.type="button"; b.className="chip"; b.innerHTML=s+" <small>駅</small>";
+    b.addEventListener("click",function(){
+      var targetDir = (s==="飯田") ? "up" : "down";
+      if(s==="平岡"){ targetDir = dir; }
+      if(targetDir!==dir){ setDir(targetDir); }
+      fromSel.value=s;
+      var order=stationOrder();
+      if(order.indexOf(fromSel.value) >= order.indexOf(toSel.value)){
+        toSel.value = targetDir==="down" ? "飯田" : "豊橋";
+        if(fromSel.value===toSel.value){ toSel.value = targetDir==="down" ? "豊橋" : "飯田"; fromSel.value=s; }
+      }
+      render();
+      document.getElementById("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+    });
+    chips.appendChild(b);
+  });
+
+  // timetable tables
+  function buildTable(el, data, trains, order){
+    var html="<thead><tr><th>駅名</th>";
+    trains.forEach(function(n){ html+="<th>伊那路"+n+"</th>"; });
+    html+="</tr></thead><tbody>";
+    order.forEach(function(s){
+      var key = KEY_STATIONS.indexOf(s)>=0;
+      html+='<tr'+(key?' class="keyrow"':'')+'><th>'+s+(key?'<span class="keymark">よく使う駅</span>':'')+"</th>";
+      trains.forEach(function(n){ html+="<td>"+fmtTime(data[n][s])+"</td>"; });
+      html+="</tr>";
+    });
+    html+="</tbody>";
+    el.innerHTML=html;
+  }
+  buildTable(document.getElementById("ttDown"), DOWN, ["1号","3号"], STATIONS);
+  buildTable(document.getElementById("ttUp"), UP, ["2号","4号"], STATIONS.slice().reverse());
+
+  setDir("down");
+  setInterval(render, 60000);
+})();
+</script>
+</body>
+</html>
