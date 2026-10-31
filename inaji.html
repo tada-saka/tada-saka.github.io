@@ -82,6 +82,20 @@
   a.btnlink:active{border-color:var(--accent)}
   .farebox{background:var(--accent-soft);border-radius:var(--radius);padding:14px 16px;margin:14px 0}
   .farebox b{color:var(--accent)}
+  /* fare table */
+  table.ft{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;background:var(--surface)}
+  table.ft th,table.ft td{border:1px solid var(--line);padding:8px 6px;text-align:right;font-size:.92rem}
+  table.ft thead th{background:var(--surface2);text-align:center;font-size:.85rem;line-height:1.4}
+  table.ft tbody th{text-align:left;background:var(--surface);font-weight:700;white-space:nowrap}
+  table.ft td.total{font-weight:800}
+  table.ft td .subfee{display:block;font-size:.78rem;font-weight:400;color:var(--muted);white-space:nowrap}
+  .fare-result{margin-top:12px;background:var(--accent-soft);border-radius:10px;padding:10px 12px;font-size:.95rem;color:var(--ink)}
+  .fare-result b{color:var(--accent)}
+  @media (max-width:520px){
+    table.ft th,table.ft td{padding:7px 4px;font-size:.84rem}
+    table.ft thead th{font-size:.78rem}
+    table.ft td .subfee{font-size:.72rem}
+  }
   footer{margin-top:36px;font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
   @media (max-width:520px){
     h1{font-size:1.55rem}
@@ -138,8 +152,24 @@
   <h2>運賃・特急料金について</h2>
   <div class="farebox">
     <p style="margin-top:0">特急「伊那路」に乗るには、<b>乗車券＋特急券（特急料金）</b> が必要です。指定席は一部の車両のみで、自由席車もあります（指定席特急料金は時期により変わります）。</p>
-    <p style="margin-bottom:0">運賃・特急料金の金額は、区間・日付によって確認が必要です。下のJR東海公式「時刻表・運賃検索」で、乗車日と区間を指定してご確認ください。</p>
+    <p style="margin-bottom:0">よく使う4駅（豊橋・新城・平岡・飯田）の間の6区間は、下表の金額です（大人1名・片道、2026年11月1日にJR東海公式検索で確認）。</p>
   </div>
+  <div class="tt-wrap">
+    <table class="ft" aria-label="よく使う4駅間の運賃・特急料金表">
+      <thead>
+        <tr><th scope="col">区間</th><th scope="col">運賃</th><th scope="col">特急料金<br>（指定席）</th><th scope="col">合計<br>（指定席）</th><th scope="col">合計<br>（自由席）</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">豊橋 ⇔ 飯田</th><td>2,640円</td><td>2,390円</td><td class="total">5,030円</td><td class="total">4,500円<span class="subfee">特急料金 1,860円</span></td></tr>
+        <tr><th scope="row">豊橋 ⇔ 新城</th><td>420円</td><td>1,290円</td><td class="total">1,710円</td><td class="total">750円<span class="subfee">特急料金 330円</span></td></tr>
+        <tr><th scope="row">豊橋 ⇔ 平岡</th><td>1,880円</td><td>1,730円</td><td class="total">3,610円</td><td class="total">3,080円<span class="subfee">特急料金 1,200円</span></td></tr>
+        <tr><th scope="row">新城 ⇔ 平岡</th><td>1,340円</td><td>1,730円</td><td class="total">3,070円</td><td class="total">2,540円<span class="subfee">特急料金 1,200円</span></td></tr>
+        <tr><th scope="row">新城 ⇔ 飯田</th><td>1,980円</td><td>2,390円</td><td class="total">4,370円</td><td class="total">3,840円<span class="subfee">特急料金 1,860円</span></td></tr>
+        <tr><th scope="row">平岡 ⇔ 飯田</th><td>680円</td><td>1,290円</td><td class="total">1,970円</td><td class="total">1,340円<span class="subfee">特急料金 660円</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">※ 金額は大人1名・片道です。行き・帰りとも同額です。指定席特急料金は時期により変わる場合があります。上表以外の区間（豊川・本長篠・湯谷温泉・中部天竜・水窪・温田・天竜峡を含む区間など）の金額は、下のJR東海公式「時刻表・運賃検索」で、乗車日と区間を指定してご確認ください。</p>
   <h3>お得なきっぷ</h3>
   <ul class="notes">
     <li><strong>伊那路特急回数券</strong>：豊橋〜飯田の設定があり、4枚つづり12,600円（JR東海公式）。指定席も利用できます。発売・利用条件は公式ページでご確認ください。</li>
@@ -164,7 +194,7 @@
   </div>
 
   <footer>
-    <p>このページは個人利用のための非公式ガイドです。時刻はJR東海公式資料（2026年3月改正）に基づきます。正確な情報は公式サイトでご確認ください。</p>
+    <p>このページは個人利用のための非公式ガイドです。時刻はJR東海公式資料（2026年3月改正）に基づきます。運賃・特急料金はよく使う4駅間の6区間のみ、JR東海公式検索で確認した金額（2026年11月1日確認・大人1名片道）です。正確な情報は公式サイトでご確認ください。</p>
   </footer>
 </div>
 
@@ -181,6 +211,21 @@
     "2号":{"飯田":"9:58","天竜峡":"10:14","温田":"10:31","平岡":"10:42","水窪":"11:05","中部天竜":"11:21","湯谷温泉":"11:49","本長篠":"11:57","新城":"12:08","豊川":"12:21","豊橋":"12:31"},
     "4号":{"飯田":"15:55","天竜峡":"16:12","温田":"16:29","平岡":"16:42","水窪":"17:04","中部天竜":"17:18","湯谷温泉":"17:46","本長篠":"17:54","新城":"18:06","豊川":"18:20","豊橋":"18:31"}
   };
+  // Fares verified via JR Central official search on 2026-11-01 (adult, one-way).
+  // Keyed by station pair in STATIONS order; amounts in yen.
+  var FARES = {
+    "豊橋|新城":{fare:420,reserved:1290,reservedTotal:1710,free:330,freeTotal:750},
+    "豊橋|平岡":{fare:1880,reserved:1730,reservedTotal:3610,free:1200,freeTotal:3080},
+    "豊橋|飯田":{fare:2640,reserved:2390,reservedTotal:5030,free:1860,freeTotal:4500},
+    "新城|平岡":{fare:1340,reserved:1730,reservedTotal:3070,free:1200,freeTotal:2540},
+    "新城|飯田":{fare:1980,reserved:2390,reservedTotal:4370,free:1860,freeTotal:3840},
+    "平岡|飯田":{fare:680,reserved:1290,reservedTotal:1970,free:660,freeTotal:1340}
+  };
+  function fareFor(a,b){
+    var key = STATIONS.indexOf(a) < STATIONS.indexOf(b) ? a+"|"+b : b+"|"+a;
+    return FARES[key] || null;
+  }
+  function fmtYen(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,",")+"円";}
   function toMin(t){var p=t.split(":");return parseInt(p[0],10)*60+parseInt(p[1],10);}
   function fmtDur(m){var h=Math.floor(m/60),r=m%60;return h>0?(h+"時間"+(r>0?r+"分":"")):(r+"分");}
   function pad(n){return (n<10?"0":"")+n;}
@@ -243,6 +288,10 @@
           + (tomorrow ? '（本日の列車は終了しました。明日の最初の列車です）'
                       : '（発車まであと約 '+fmtDur(waitMin)+'）')
           + '</p>';
+    var fare = fareFor(from, to);
+    if(fare){
+      html += '<p class="fare-result">この区間の金額（大人1名・片道）：指定席 <b>'+fmtYen(fare.reservedTotal)+'</b>（運賃 '+fmtYen(fare.fare)+'＋特急料金 '+fmtYen(fare.reserved)+'）／ 自由席 <b>'+fmtYen(fare.freeTotal)+'</b>（運賃 '+fmtYen(fare.fare)+'＋特急料金 '+fmtYen(fare.free)+'）</p>';
+    }
     var rest = tomorrow ? list.slice(1) : upcoming.slice(1);
     if(rest.length){
       html += '<div class="later"><div><b>その後の列車</b></div>';
